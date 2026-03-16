@@ -1,4 +1,3 @@
 .DS_Store
-models/*.pkl
 __pycache__/
 *.pyc
