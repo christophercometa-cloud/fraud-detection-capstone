@@ -1,26 +1,87 @@
 import pandas as pd
-import numpy as np
+import os
+import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import RobustScaler
 from imblearn.over_sampling import SMOTE
 
-# 1. Load Data (Assuming 'data.csv' exists in your /data folder)
-df = pd.read_csv('data/creditcard.csv')
+def load_data(filepath):
+    """Loads the raw dataset."""
+    print(f"Loading data from {filepath}...")
+    return pd.read_csv(filepath)
 
-# 2. EDA: Check imbalance
-print(df['Class'].value_counts(normalize=True)) 
+def clean_and_scale(df):
+    """Handles duplicates and scales Time/Amount features."""
+    print("Cleaning and scaling data...")
+    
+    # The Kaggle dataset contains about 1081 duplicates; it's best practice to drop them
+    df = df.drop_duplicates()
+    
+    # Initialize scaler
+    scaler = RobustScaler()
+    
+    # Scale Amount and Time (RobustScaler is less prone to extreme outliers)
+    df['Amount_Scaled'] = scaler.fit_transform(df[['Amount']])
+    df['Time_Scaled'] = scaler.fit_transform(df[['Time']])
+    
+    # Drop original columns
+    df = df.drop(['Time', 'Amount'], axis=1)
+    
+    return df, scaler
 
-# 3. Preprocessing: Scaling Time and Amount (RobustScaler handles outliers well)
-scaler = RobustScaler()
-df['Amount_Scaled'] = scaler.fit_transform(df['Amount'].values.reshape(-1,1))
-df['Time_Scaled'] = scaler.fit_transform(df['Time'].values.reshape(-1,1))
-df.drop(['Time', 'Amount'], axis=1, inplace=True)
+def split_and_resample(df, target_col='Class'):
+    """Splits the data and applies SMOTE to the training set only."""
+    print("Splitting data and applying SMOTE...")
+    
+    X = df.drop(target_col, axis=1)
+    y = df[target_col]
+    
+    # Stratified split to maintain the 0.17% fraud ratio in the test set
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
+    )
+    
+    # Apply SMOTE strictly to the training data to avoid data leakage
+    sm = SMOTE(random_state=42)
+    X_train_res, y_train_res = sm.fit_resample(X_train, y_train)
+    
+    return X_train_res, X_test, y_train_res, y_test
 
-# 4. Feature Selection & Train/Test Split
-X = df.drop('Class', axis=1)
-y = df['Class']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+if __name__ == "__main__":
+    # 1. Define paths relative to this file so execution cwd does not matter
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    input_candidates = [
+        os.path.join(project_root, 'data', 'raw', 'creditcard.csv'),
+        os.path.join(project_root, 'data', 'creditcard.csv'),
+    ]
+    input_path = next((p for p in input_candidates if os.path.exists(p)), None)
+    if input_path is None:
+        raise FileNotFoundError(
+            "Could not find creditcard.csv in expected locations: "
+            + ", ".join(input_candidates)
+        )
 
-# 5. Handle Imbalance (SMOTE applied ONLY to training data to avoid data leakage)
-sm = SMOTE(random_state=42)
-X_train_res, y_train_res = sm.fit_resample(X_train, y_train)
+    output_dir = os.path.join(project_root, 'data', 'processed')
+    model_dir = os.path.join(project_root, 'models')
+    
+    # Create directories if they don't exist
+    os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(model_dir, exist_ok=True)
+    
+    # 2. Execute pipeline
+    df_raw = load_data(input_path)
+    df_clean, fitted_scaler = clean_and_scale(df_raw)
+    X_train_res, X_test, y_train_res, y_test = split_and_resample(df_clean)
+    
+    # 3. Save processed data for the train.py script
+    print("Saving processed datasets...")
+    X_train_res.to_csv(os.path.join(output_dir, 'X_train_res.csv'), index=False)
+    X_test.to_csv(os.path.join(output_dir, 'X_test.csv'), index=False)
+    y_train_res.to_csv(os.path.join(output_dir, 'y_train_res.csv'), index=False)
+    y_test.to_csv(os.path.join(output_dir, 'y_test.csv'), index=False)
+    
+    # 4. Save the scaler artifact for the deployment API
+    print("Saving scaler artifact...")
+    joblib.dump(fitted_scaler, os.path.join(model_dir, 'robust_scaler.pkl'))
+    
+    print("Data preparation complete! 🎉")

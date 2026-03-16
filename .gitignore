@@ -1,2 +1,6 @@
 .DS_Store
 data/creditcard.csv
+data/processed/
+models/*.pkl
+__pycache__/
+*.pyc
