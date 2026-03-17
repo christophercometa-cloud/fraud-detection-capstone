@@ -1,3 +1,9 @@
+#author: Christopher Cometa
+#date: 2026-03-15
+#description: This script sets up a FastAPI application that serves a trained XGBoost model for real-time fraud detection. It defines an endpoint that accepts transaction data, processes it, and returns
+# a prediction along with the probability of fraud and a status message indicating whether the transaction is approved or blocked.
+
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, ConfigDict
 import joblib

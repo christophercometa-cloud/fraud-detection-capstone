@@ -1,3 +1,7 @@
+#author: Christopher Cometa
+#date: 2026-03-15
+#description: This script prepares the credit card fraud dataset by cleaning, scaling, and applying SMOTE to handle class imbalance. It saves the processed datasets and the fitted scaler for later use in model training and deployment.
+
 import pandas as pd
 import os
 import joblib

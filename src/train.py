@@ -1,3 +1,7 @@
+#Author: Christopher Cometa
+#Date: 2026-03-15
+#Description: This script trains an XGBoost model on the processed credit card fraud dataset. It evaluates the model using classification metrics suitable for imbalanced data and saves the trained model for later use
+
 import pandas as pd
 import os
 import joblib
