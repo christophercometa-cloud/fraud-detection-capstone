@@ -25,8 +25,6 @@ The dataset used for this project is the widely recognized [Credit Card Fraud De
 | `Amount` | Float | Transaction amount in USD. |
 | `Class` (Target)| Integer | Indicates whether the transaction is fraud (1) or legitimate (0). |
 
-*(Note: The raw CSV is not included in this repository due to GitHub's file size constraints. Please download it from Kaggle and place it in the `data/raw/` folder).*
-
 ---
 
 ## 🏗️ Repository Structure
