@@ -29,11 +29,11 @@ The dataset used for this project is the widely recognized [Credit Card Fraud De
 
 ---
 
-## 🏗️ Repository Structure (Step 7)
+## 🏗️ Repository Structure
 ```text
 fraud-detection-capstone/
 ├── data/
-│   ├──                       # Original data 
+│   ├── credicard.csv         # Original data 
 │   └── processed/            # Cleaned data (X_train_res.csv, etc.)
 ├── notebooks/
 │   ├── 01_EDA_and_Cleaning.ipynb          
