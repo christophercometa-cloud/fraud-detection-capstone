@@ -194,12 +194,9 @@ def predict_and_explain(transaction: Transaction):
         raise HTTPException(status_code=500, detail="Model not loaded.")
     
     input_data = pd.DataFrame([transaction.features], columns=feature_names)
-    
-    # --- TEMPORARY OVERRIDE FOR YOUR SCREENSHOT/VIDEO DEMO ---
-    prediction = 1 
-    probability = 0.985 
-    # ---------------------------------------------------------
-    
+    prediction = model.predict(input_data)[0]
+    probability = model.predict_proba(input_data)[0][1]
+
     # Base response
     response = {
         "is_fraud": bool(prediction),
