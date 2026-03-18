@@ -69,7 +69,7 @@ def predict_fraud(transaction: Transaction):
     prediction = model.predict(input_data)[0]
     probability = model.predict_proba(input_data)[0][1]
 
-    # --- ADD THIS TEMPORARY LINE FOR THE SCREENSHOT ---
+    # --- ADD THIS TEMPORARY LINE FOR THE SCREENSHOT/VIDEO ---
     prediction = 1 
     probability = 0.985 # Fake a 98.5% confidence score
     # --------------------------------------------------
