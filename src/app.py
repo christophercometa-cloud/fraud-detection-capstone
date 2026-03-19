@@ -38,19 +38,22 @@ if model is not None and hasattr(model, 'feature_names_in_'):
 else:
     feature_names = default_feature_names
 
-# --- 3. Setup Gemini API for Step 9 ---
+# --- 3. Setup Gemini API  ---
 # Gemini is called over REST here to avoid the deprecated SDK's gRPC DNS issues.
 GOOGLE_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta"
 GEMINI_TIMEOUT_SECONDS = float(os.getenv("GEMINI_TIMEOUT_SECONDS", "15"))
+EXPOSE_GENAI_ERRORS = os.getenv("EXPOSE_GENAI_ERRORS", "false").strip().lower() in {
+    "1", "true", "yes", "on"
+}
 selected_model = None
 
 
 def _select_available_gemini_model() -> str | None:
     """Pick a currently available Gemini model that supports generateContent."""
     preferred_models = [
-        "models/gemini-2.0-flash",
-        "models/gemini-2.0-flash-lite",
+        "models/gemini-2.5-flash",
+        "models/gemini-2.5-flash-lite",
         "models/gemini-1.5-flash-latest",
         "models/gemini-1.5-flash",
         "models/gemini-1.5-flash-8b",
@@ -115,17 +118,21 @@ def _fallback_explanation(probability: float) -> str:
     )
 
 
-def _generate_fraud_explanation(probability: float) -> str:
-    model_name = _get_gemini_model()
-    if not GOOGLE_API_KEY or model_name is None:
-        raise RuntimeError("No Gemini API key or compatible model available.")
-
-    prompt = f"""
+def _build_fraud_prompt(probability: float) -> str:
+    return f"""
     You are a fraud analyst copilot. A transaction was just blocked by our XGBoost model.
     The model is {round(probability * 100, 2)}% confident this is fraud.
     Write a concise, 2-sentence explanation for a human analyst explaining that the transaction
     was blocked due to anomalous patterns. Recommend an immediate account freeze.
     """.strip()
+
+
+def _generate_fraud_explanation(probability: float) -> str:
+    model_name = _get_gemini_model()
+    if not GOOGLE_API_KEY or model_name is None:
+        raise RuntimeError("No Gemini API key or compatible model available.")
+
+    prompt = _build_fraud_prompt(probability)
 
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
@@ -140,10 +147,14 @@ def _generate_fraud_explanation(probability: float) -> str:
     candidates = response_body.get("candidates", [])
     for candidate in candidates:
         content = candidate.get("content", {})
-        for part in content.get("parts", []):
-            text = part.get("text", "").strip()
-            if text:
-                return f"GenAI Copilot: {text}"
+        text_parts = [
+            part.get("text", "").strip()
+            for part in content.get("parts", [])
+            if part.get("text", "").strip()
+        ]
+        if text_parts:
+            explanation_text = ' '.join(text_parts)
+            return f"GenAI Copilot: {explanation_text}"
 
     raise RuntimeError("Gemini returned no text content.")
 
@@ -202,15 +213,22 @@ def predict_and_explain(transaction: Transaction):
         "is_fraud": bool(prediction),
         "fraud_probability": float(probability),
         "status": "Transaction Blocked" if prediction == 1 else "Transaction Approved",
-        "explanation": "Transaction normal. No anomalies detected."
+        "explanation": "Transaction normal. No anomalies detected.",
+        "genai_status": "not-applicable",
+        "genai_prompt": None
     }
 
     # If it's fraud, trigger the LLM to explain it!
     if prediction == 1:
+        response["genai_prompt"] = _build_fraud_prompt(probability)
         try:
             response["explanation"] = _generate_fraud_explanation(probability)
-        except RuntimeError:
+            response["genai_status"] = "generated"
+        except RuntimeError as exc:
             response["explanation"] = _fallback_explanation(probability)
+            response["genai_status"] = "fallback"
+            if EXPOSE_GENAI_ERRORS:
+                response["genai_error"] = str(exc)
             
     return response
 
