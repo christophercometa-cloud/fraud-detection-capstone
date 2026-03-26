@@ -44,7 +44,7 @@ fraud-detection-capstone/
 │   ├── xgb_fraud_model.pkl   # Saved model artifact
 │   └── robust_scaler.pkl     # Saved scaler artifact
 ├── presentations/
-│   ├── Credit_Card_Fraud_Detection_Technical_Presentation.pdf    
-│   └── Next-Generation_Fraud_Detection_Business_Presentation.pdf     
+│   ├── Credit_Card_Fraud_Detection_Technical_Presentation.pdf  
+│   └── Next-Generation_Fraud_Detection_Business_Presentation.pdf
 ├── requirements.txt          # Python dependencies
 └── README.md                 # Project documentation
