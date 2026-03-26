@@ -5,9 +5,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## 📌 Project Overview
-Financial institutions lose billions of dollars annually to credit card fraud. Traditional, rules-based fraud detection systems often struggle to keep up with evolving fraud tactics and tend to flag too many legitimate transactions (False Positives), resulting in severe customer friction and lost revenue.
+Credit Card Fraud has cost banks over $billions per year. Conventional Rules-Based Fraud Detection Systems are normally unable to recognize new types of fraud that continue to evolve. These traditional systems will also generate far too many False Positives when reviewing legitimate customer transactions. The result is serious customer dissatisfaction as well as loss of potential sales/revenue.
 
-This capstone project demonstrates an end-to-end machine learning lifecycle to predict fraudulent transactions in real-time. By leveraging an XGBoost classifier optimized for highly imbalanced data, this solution maximizes fraud detection while minimizing false positives. Additionally, it integrates a Generative AI "Copilot" to provide plain-English explanations of model decisions for human review teams.
+This Capstone Project describes the entire Machine Learning Lifecycle for Real-Time prediction of potential fraudulent transactions. It uses an XGBoost Classifier optimized specifically for very unbalanced data. As such, the classifier maximizes the ability to detect all potential fraudulent transactions while minimizing the number of false positives. Additionally, the system utilizes a Generative Artificial Intelligence ("AI") "Copilot" which can create plain English descriptions of each model decision so that Human Review Teams may understand the reasoning behind them.
 
 ---
 
