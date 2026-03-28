@@ -48,6 +48,7 @@ fraud-detection-capstone/
 │   └── Next-Generation_Fraud_Detection_Business_Presentation.pdf
 ├── requirements.txt          # Python dependencies
 └── README.md                 # Project documentation
+```
 
 ## 🚀 Local Deployment Guide
 
@@ -63,3 +64,5 @@ Open your terminal and clone this project to your local machine:
 ```bash
 git clone [https://github.com/christophercometa-cloud/fraud-detection-capstone.git](https://github.com/christophercometa-cloud/fraud-detection-capstone.git)
 cd fraud-detection-capstone
+```
+
