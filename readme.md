@@ -65,4 +65,59 @@ Open your terminal and clone this project to your local machine:
 git clone [https://github.com/christophercometa-cloud/fraud-detection-capstone.git](https://github.com/christophercometa-cloud/fraud-detection-capstone.git)
 cd fraud-detection-capstone
 ```
+### 2. Create a Virtual Environment
+It is highly recommended to run this project in an isolated virtual environment to prevent dependency conflicts.
 
+Mac/Linux:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+Windows
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+### 3. Install Dependencies
+Install all required Python packages (FastAPI, XGBoost, Google Generative AI SDK, etc.):
+```bash
+pip install fastapi uvicorn pandas scikit-learn xgboost pydantic joblib google-generativeai
+```
+(Note: If you are using the provided requirements file, simply run pip install -r requirements.txt)
+
+### 4. Set Up the Generative AI Copilot (Step 9)
+To enable the LLM explanations, you must provide your Google Gemini API key as an environment variable in your terminal.
+
+Mac/Linux:
+```bash
+export GEMINI_API_KEY="your_api_key_here"
+```
+
+Windows (Command Prompt):
+```bash
+set GEMINI_API_KEY="your_api_key_here"
+```
+
+Windows (PowerShell):
+```bash
+$env:GEMINI_API_KEY="your_api_key_here"
+```
+
+### 5. Start the Server
+Navigate to the directory containing app.py and start the Uvicorn web server:
+```bash
+uvicorn app:app --reload
+```
+
+### 6. Test the API via Swagger UI
+Once the terminal displays Application startup complete, open your web browser and navigate to the interactive API documentation:
+👉 https://www.google.com/search?q=http://127.0.0.1:8000/docs
+
+Click on the green POST /predict_and_explain endpoint.
+
+Click "Try it out".
+
+Paste a transaction array into the Request Body.
+
+Hit Execute to see the XGBoost model and GenAI Copilot in action!
