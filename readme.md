@@ -62,7 +62,7 @@ Follow these steps to deploy the Fraud Detection API and the Generative AI Copil
 ### 1. Clone the Repository
 Open your terminal and clone this project to your local machine:
 ```bash
-git clone [https://github.com/christophercometa-cloud/fraud-detection-capstone.git](https://github.com/christophercometa-cloud/fraud-detection-capstone.git)
+git clone https://github.com/christophercometa-cloud/fraud-detection-capstone.git
 cd fraud-detection-capstone
 ```
 ### 2. Create a Virtual Environment
