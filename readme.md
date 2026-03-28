@@ -49,7 +49,7 @@ fraud-detection-capstone/
 ├── requirements.txt          # Python dependencies
 └── README.md                 # Project documentation
 
-🚀 Local Deployment Guide (How to Run This API)
+## 🚀 Local Deployment Guide (How to Run This API)
 Follow these steps to deploy the Fraud Detection API and the Generative AI Copilot on your local machine.
 
 1. Clone the Repository
