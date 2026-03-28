@@ -49,45 +49,17 @@ fraud-detection-capstone/
 ├── requirements.txt          # Python dependencies
 └── README.md                 # Project documentation
 
-## 🚀 Local Deployment Guide (How to Run This API)
+## 🚀 Local Deployment Guide
+
 Follow these steps to deploy the Fraud Detection API and the Generative AI Copilot on your local machine.
 
-1. Clone the Repository
+### Prerequisites
+* Python 3.9+
+* Git (and Git LFS if you are downloading the demo video)
+* A free [Google Gemini API Key](https://aistudio.google.com/)
+
+### 1. Clone the Repository
 Open your terminal and clone this project to your local machine:
-
-Bash
-git clone https://github.com/christophercometa-cloud/fraud-detection-capstone.git
+```bash
+git clone [https://github.com/christophercometa-cloud/fraud-detection-capstone.git](https://github.com/christophercometa-cloud/fraud-detection-capstone.git)
 cd fraud-detection-capstone
-2. Create a Virtual Environment
-It is highly recommended to run this project in an isolated virtual environment to prevent dependency conflicts.
-
-Mac/Linux: python3 -m venv venv and then source venv/bin/activate
-
-Windows: python -m venv venv and then venv\Scripts\activate
-
-3. Install Dependencies
-Install all required Python packages (including FastAPI, XGBoost, and the Google Generative AI SDK):
-
-Bash
-pip install fastapi uvicorn pandas scikit-learn xgboost pydantic joblib google-generativeai
-(Note: If you have a requirements.txt file, you can simply run pip install -r requirements.txt)
-
-4. Set Up the Generative AI Copilot (Step 9)
-To enable the LLM explanations, you must provide a Google Gemini API key. You can get one for free at Google AI Studio. Set it as an environment variable in your terminal:
-
-Mac/Linux: export GEMINI_API_KEY="your_api_key_here"
-
-Windows (Command Prompt): set GEMINI_API_KEY="your_api_key_here"
-
-Windows (PowerShell): $env:GEMINI_API_KEY="your_api_key_here"
-
-5. Start the Server
-Navigate to the folder containing app.py (e.g., cd src or stay in the root if it's there) and start the Uvicorn server:
-
-Bash
-uvicorn app:app --reload
-6. Test the API via Swagger UI
-Once the server says "Application startup complete," open your web browser and navigate to:
-👉 http://127.0.0.1:8000/docs
-
-Click on the POST /predict_and_explain endpoint, click "Try it out", paste a transaction array into the Request Body, and hit Execute to see the model and GenAI Copilot in action!
