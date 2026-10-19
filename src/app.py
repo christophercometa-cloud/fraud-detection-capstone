@@ -81,13 +81,16 @@ def _select_available_gemini_model() -> str | None:
 
 
 def _gemini_request(path: str, payload: dict | None = None) -> dict:
-    query = parse.urlencode({"key": GOOGLE_API_KEY})
-    url = f"{GEMINI_API_BASE_URL}{path}?{query}"
+    url = f"{GEMINI_API_BASE_URL}{path}"
     body = None if payload is None else json.dumps(payload).encode("utf-8")
+    headers = {"Content-Type": "application/json"}
+    if GOOGLE_API_KEY:
+        headers["x-goog-api-key"] = GOOGLE_API_KEY
+
     req = request.Request(
         url,
         data=body,
-        headers={"Content-Type": "application/json"},
+        headers=headers,
         method="POST" if body is not None else "GET",
     )
 
@@ -203,6 +206,8 @@ def predict_fraud(transaction: Transaction):
 def predict_and_explain(transaction: Transaction):
     if model is None:
         raise HTTPException(status_code=500, detail="Model not loaded.")
+    if len(transaction.features) != len(feature_names):
+        raise HTTPException(status_code=400, detail=f"Exactly {len(feature_names)} features required.")
     
     input_data = pd.DataFrame([transaction.features], columns=feature_names)
     prediction = model.predict(input_data)[0]
